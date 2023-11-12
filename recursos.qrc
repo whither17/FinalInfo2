@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/logo">
+        <file>logo.png</file>
+    </qresource>
+    <qresource prefix="/fondos">
+        <file>calle.jpeg</file>
+    </qresource>
+    <qresource prefix="/entidades">
+        <file>Jerry.png</file>
+    </qresource>
+</RCC>
