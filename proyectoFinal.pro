@@ -23,8 +23,6 @@ HEADERS += \
     player.h
 
 FORMS += \
-    level1.ui \
-    level2.ui \
     mainwindow.ui
 
 # Default rules for deployment.

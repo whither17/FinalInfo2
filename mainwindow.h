@@ -27,15 +27,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    Ui::level1UI level1;
-    Ui::level2UI level2;
-
-    QWidget *nivel1Widget;
-    QWidget *nivel2Widget;
-
     unsigned short ventana;
     game *nivel2;
-
-
 };
 #endif // MAINWINDOW_H

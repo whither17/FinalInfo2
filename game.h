@@ -17,14 +17,21 @@ class game : public QGraphicsView
 {
     Q_OBJECT
 public:
-    game();
-    void loadGame(QGraphicsView *n);
-    void keyPressEvent(QKeyEvent *event);
-    ~game();
-private:
     player *jerry;
+    game();
+    void loadGame();
+    ~game();
+public slots:
+    void keyPressEvent(QKeyEvent *event);
+private:
+
     QGraphicsRectItem *limites[5];
     QGraphicsScene *scene;
+    unsigned short mode;
+};
+
+enum Mode{
+    Pause, Play,
 };
 
 #endif // GAME_H
