@@ -11,19 +11,28 @@ class player : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
+
     player();
     void cutSprites(QString name);
+    void cutSpritesDead(QString name);
     void setDirection(QPoint dir);
     void move();
+    void usarArma();
     ~player();
+    void setCanMove(bool newCanMove);
+
 public slots:
     void switchAnimate();
+    void animateDead();
+    void isAnimate();
 private:
+    QTimer *jerryDead;
     std::vector<QPixmap> sprites;
-    unsigned short limit, index, vista;
-    QTimer *jerryMove;
+    std::vector<QPixmap> spritesDead;
+    short limit, index, cursor;
+
     QPoint tempDir, direccion;
-    bool isAlive;
+    bool isAlive, canMove;
 
 };
 

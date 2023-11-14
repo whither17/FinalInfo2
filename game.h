@@ -12,6 +12,7 @@
 #include <QWidget>
 #include "player.h"
 #include "macros.h"
+#include "bala.h"
 
 class game : public QGraphicsView
 {
@@ -20,11 +21,11 @@ public:
     player *jerry;
     game();
     void loadGame();
+    void colliderLimits(player *pl);
     ~game();
 public slots:
     void keyPressEvent(QKeyEvent *event);
 private:
-
     QGraphicsRectItem *limites[5];
     QGraphicsScene *scene;
     unsigned short mode;
