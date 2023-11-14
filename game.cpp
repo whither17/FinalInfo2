@@ -31,7 +31,6 @@ void game::colliderLimits(player *pl)
     for(int i = 0; i < 5; i++)
     {
         if(limites[i]->collidesWithItem(pl)) pl->setCanMove(false);
-        //break;
     }
 }
 
