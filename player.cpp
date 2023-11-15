@@ -17,7 +17,7 @@ void player::cutSprites(QString name)
     QPixmap image;
     image.load(name);
 
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < 4; i++)
     {
         for(int j = 0; j < 3; j++)
         {
@@ -43,8 +43,8 @@ void player::setDirection(QPoint dir)
     tempDir = dir;
     if(dir == Right)
     {
-        setPixmap(sprites[3].scaledToHeight(70).transformed(QTransform().scale(-1, 1)));
-        cursor = 3;
+        setPixmap(sprites[9].scaledToHeight(70));
+        cursor = 9;
     }
     if(dir == Left)
     {
@@ -65,9 +65,7 @@ void player::setDirection(QPoint dir)
 
 void player::switchAnimate()
 {
-    if(tempDir == Right) setPixmap(sprites[index+cursor].scaledToHeight(70).transformed(QTransform().scale(-1, 1)));
-    else setPixmap(sprites[index+cursor].scaledToHeight(70));
-
+    setPixmap(sprites[index+cursor].scaledToHeight(70));
 
     index += limit;
     if (index >= 2 || index <= 0)
@@ -85,20 +83,20 @@ void player::isAnimate()
     //jerryMove->start();
 }
 
-void player::setCanMove(bool newCanMove)
+void player::move(bool mover)
 {
-    canMove = newCanMove;
-}
-
-void player::move()
-{
-    if(canMove)
-    {    
-        direccion = tempDir;
-        setPos(pos() + direccion * 4);
-        switchAnimate();
+    if(mover == false) {
+    direccion = tempDir;
+    setPos(pos() + direccion * 4);
+    switchAnimate();
     }
-    else{
+
+    else
+    {
+    if(direccion == Up) setPos(x(),y()+2);
+    if(direccion == Down) setPos(x(),y()-2);
+    if(direccion == Left) setPos(x()+2,y());
+    if(direccion == Right) setPos(x()-2,y());
 
     }
 }

@@ -13,10 +13,11 @@ class player : public QObject, public QGraphicsPixmapItem
 public:
 
     player();
+    QPoint oldPos;
     void cutSprites(QString name);
     void cutSpritesDead(QString name);
     void setDirection(QPoint dir);
-    void move();
+    void move(bool mover);
     void usarArma();
     ~player();
     void setCanMove(bool newCanMove);

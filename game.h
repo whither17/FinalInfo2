@@ -11,6 +11,7 @@
 #include <QEventLoop>
 #include <QWidget>
 #include "player.h"
+#include "enemy.h"
 #include "macros.h"
 #include "bala.h"
 
@@ -18,14 +19,16 @@ class game : public QGraphicsView
 {
     Q_OBJECT
 public:
-    player *jerry;
+
     game();
     void loadGame();
-    void colliderLimits(player *pl);
+    bool colliderLimits(player *pl);
     ~game();
 public slots:
     void keyPressEvent(QKeyEvent *event);
 private:
+    player *jerry;
+    enemy *mantis;
     QGraphicsRectItem *limites[5];
     QGraphicsScene *scene;
     unsigned short mode;

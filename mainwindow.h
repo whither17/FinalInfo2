@@ -4,8 +4,6 @@
 #include <QMainWindow>
 #include <QGraphicsItem>
 #include <QPixmap>
-#include "ui_level1.h"
-#include "ui_level2.h"
 #include "game.h"
 
 QT_BEGIN_NAMESPACE

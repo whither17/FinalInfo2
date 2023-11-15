@@ -9,6 +9,11 @@ const int bordeJerry = 5;
 const int alto_Jerry = 137;
 const int ancho_Jerry = 103;
 
+const int bordeMantis = 3;
+const int alto_Mantis = 382;
+const int ancho_Mantis = 252;
+
+
 const QPoint Up = QPoint(0, -1);
 const QPoint Down = QPoint(0, 1);
 const QPoint Left = QPoint(-1, 0);

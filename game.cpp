@@ -4,6 +4,7 @@ game::game()
 {
     this->setWindowTitle("Nivel 2");
     jerry = new player;
+    mantis = new enemy;
     scene = new QGraphicsScene;
     mode = Play;
 }
@@ -20,48 +21,53 @@ void game::loadGame()
     limites[2] = scene->addRect(0, 20*ancho, 4*largo, 3*ancho);        //inf izq
     limites[3] = scene->addRect(23*largo, 20*ancho, 8*largo, 3*ancho); //inf der
     limites[4] = scene->addRect(19*largo, 0, 4*largo, 3*ancho);        //arbol
-    jerry->setPos(13*ancho, 13*largo);
 
+    jerry->setPos(13*ancho, 13*largo);
+    mantis->setPos(80, 70);
     scene->addItem(jerry);
+    scene->addItem(mantis);
     this->setScene(scene);
 }
 
-void game::colliderLimits(player *pl)
+bool game::colliderLimits(player *pl)
 {
+    bool colision = false;
     for(int i = 0; i < 5; i++)
     {
-        if(limites[i]->collidesWithItem(pl)) pl->setCanMove(false);
+        if(limites[i]->collidesWithItem(pl)) colision = true;
     }
+
+    if((pl->x() > 780) || (pl->y() > 560) || (pl->x() < 0) || (pl->y() < 0)) colision = true;
+
+    return colision;
 }
 
 void game::keyPressEvent(QKeyEvent *event)
 {
 
     if (mode == Mode::Play) {
-        if (event->key() == Qt::Key_W)
-        {
-            jerry->setDirection(Up);
-            colliderLimits(jerry);
-            jerry->move();
-        }
-        else if (event->key() == Qt::Key_S)
-        {
-            jerry->setDirection(Down);
-            colliderLimits(jerry);
-            jerry->move();
-        }
-        else if (event->key() == Qt::Key_A)
-        {
-            jerry->setDirection(Left);
-            colliderLimits(jerry);
-            jerry->move();
-        }
-        else if (event->key() == Qt::Key_D)
-        {
-            jerry->setDirection(Right);
-            colliderLimits(jerry);
-            jerry->move();
-        }
+
+            if (event->key() == Qt::Key_W)
+            {
+                jerry->setDirection(Up);
+                jerry->move(colliderLimits(jerry));
+            }
+            else if (event->key() == Qt::Key_S)
+            {
+                jerry->setDirection(Down);
+                jerry->move(colliderLimits(jerry));
+            }
+            else if (event->key() == Qt::Key_A)
+            {
+                jerry->setDirection(Left);
+                jerry->move(colliderLimits(jerry));
+            }
+            else if (event->key() == Qt::Key_D)
+            {
+                jerry->setDirection(Right);
+                jerry->move(colliderLimits(jerry));
+            }
+
         else if (event->key() == Qt::Key_Space)
         {
             jerry->usarArma();
