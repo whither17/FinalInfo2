@@ -11,5 +11,10 @@
         <file>explosion.png</file>
         <file>jerryDead.png</file>
         <file>Mantis.png</file>
+        <file>lanzagranadas.png</file>
+        <file>gun.png</file>
+    </qresource>
+    <qresource prefix="/Ui_level2">
+        <file>corazon.png</file>
     </qresource>
 </RCC>

@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->botonN1, SIGNAL(clicked(bool)), this, SLOT(irAnivel1()));
     connect(ui->botonN2, SIGNAL(clicked(bool)), this, SLOT(irAnivel2()));
 
-    nivel2 = new game;
+
 }
 
 void MainWindow::irAnivel1()
@@ -39,7 +39,7 @@ void MainWindow::cambiarWidget()
     case 2:
 
         this->setVisible(false);
-
+        nivel2 = new game;
         nivel2->loadGame();
         nivel2->show();
         break;

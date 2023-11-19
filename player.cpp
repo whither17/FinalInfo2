@@ -1,15 +1,23 @@
 #include "player.h"
 
-player::player()
+player::player(QGraphicsScene *scene)
 {
     cutSprites(":/entidades/Jerry.png");
     cutSpritesDead(":/entidades/jerryDead.png");
     setPixmap(sprites[8].scaledToHeight(70));
+    JerryMove = new QTimer;
+    JerryMove->start();
 
+    connect(JerryMove, SIGNAL(timeout()), this, SLOT(posicionActual()));
+    scena = scene;
     isAlive = true;
     canMove = true;
+    lives = 3;
+    salud = 3;
     index = 0;
     limit = 1;
+
+    cambiarArma(2);
 }
 
 void player::cutSprites(QString name)
@@ -61,6 +69,8 @@ void player::setDirection(QPoint dir)
         setPixmap(sprites[0].scaledToHeight(70));
         cursor = 0;
     }
+
+    arma1->setDirection(dir);
 }
 
 void player::switchAnimate()
@@ -74,6 +84,7 @@ void player::switchAnimate()
 
 void player::animateDead()
 {
+
     setPixmap(spritesDead[3]);
     //hide();
 }
@@ -83,27 +94,66 @@ void player::isAnimate()
     //jerryMove->start();
 }
 
+void player::posicionActual()
+{
+    emit movement(x(), y());
+}
+
+void player::damage()
+{
+    salud = salud - 1;
+
+    qDebug() << salud;
+
+    if(salud <= 0)
+    {
+        salud = 3;
+        lives = lives - 1;
+    }
+    if(lives <= 0) emit fail();
+
+}
+
+QPoint player::getTempDir() const
+{
+    return tempDir;
+}
+
+short player::getLives() const
+{
+    return lives;
+}
+
 void player::move(bool mover)
 {
     if(mover == false) {
-    direccion = tempDir;
-    setPos(pos() + direccion * 4);
-    switchAnimate();
+        direccion = tempDir;
+        setPos(pos() + direccion * 4);
+        switchAnimate();
     }
 
     else
     {
-    if(direccion == Up) setPos(x(),y()+2);
-    if(direccion == Down) setPos(x(),y()-2);
-    if(direccion == Left) setPos(x()+2,y());
-    if(direccion == Right) setPos(x()-2,y());
-
+        if(direccion == Up) setPos(x(), y() + 2);
+        if(direccion == Down) setPos(x(), y() - 2);
+        if(direccion == Left) setPos(x() + 2, y());
+        if(direccion == Right) setPos(x() - 2, y());
     }
+
+    arma1->mover(x(), y());
+}
+
+void player::cambiarArma(int tipo)
+{
+    arma1 = new arma(tipo, scena);
+    arma1->mover(-50, -50);
+    scena->addItem(arma1);
 }
 
 void player::usarArma()
 {
-
+    qDebug() << "tiro";
+    arma1->disparar();
 }
 
 player::~player()

@@ -12,7 +12,7 @@ class bala : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
-    bala();
+    bala(float vy0_, float vx0_, int distancia);
     QTimer *time;
     void iniciar_tiro(int x0, int y0, QPoint dir);
 private slots:
@@ -23,10 +23,10 @@ private slots:
 private:
     void cutSprites(QString name);
     std::vector<QPixmap> sprites;
-    QPoint vy, vx, vect_dr, tempDir;
-    float x,y,T,k;
+    QPoint vy, vx, tempDir;
+    float x,y,T,k, vy0, vx0;
     unsigned int n;
-    double angle, tang_angle;
+    int dis;
     short index, add;
     QTimer *animacion;
 

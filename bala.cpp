@@ -1,6 +1,6 @@
 #include "bala.h"
 
-bala::bala()
+bala::bala(float vy0_, float vx0_, int distancia) : vy0(vy0_), vx0(vx0_), dis(distancia)
 {
     setPixmap(QPixmap(":/entidades/disparoLineal.png").scaledToHeight(5));
     cutSprites(":/entidades/explosion.png");
@@ -38,13 +38,15 @@ void bala::parar_tiro()
 
 void bala::switchAnimate()
 {
-    if((tempDir == Up) || (tempDir == Down)) setRotation(0);
+
+    setRotation(0);
     setPixmap(sprites[index].scaledToHeight(50));
     index += add;
     if (index >= 6 || index <= 0)
     {
         animacion->stop();
         hide();
+        delete this;
     }
 
 }
@@ -75,15 +77,9 @@ void bala::tiro()
         vy.setX(0);
         vx.setY(0);
         vx.setX(vx0);
-/*
-        vect_dr = vy + vx;
-        tang_angle = vy.y()/vx.x();
-        angle = tan(tang_angle);
-        setRotation(angle);
-        qDebug() << angle;
-*/
+
         posx = x+vx0*k*n*T*tempDir.x();
-        posy = y-vy0*k*n*T+0.5*ay*(k*n*T*k*n*T);  //sistema coordenado rotado (tiro parabólico clásico)
+        posy = y-vy0*k*n*T+0.5*ay*(k*n*T*k*n*T); //ecuaciones de tiro parabolico
 
         setPos(posx,posy);
 
@@ -96,7 +92,7 @@ void bala::tiro()
         n++;
         setRotation(90);
         setPos(posx,posy);
-        if(posy > y + distanciaTiro1) parar_tiro();
+        if(posy > y + dis) parar_tiro();
     }
     else if(tempDir == Up)
     {
@@ -105,7 +101,7 @@ void bala::tiro()
         n++;
         setRotation(270);
         setPos(posx,posy);
-        if(posy < y - distanciaTiro1) parar_tiro();
+        if(posy < y - dis) parar_tiro();
     }
     n++;
 }
