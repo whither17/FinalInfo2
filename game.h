@@ -22,22 +22,28 @@ public:
     game();
     void loadGame();
     bool colliderLimits(player *pl);
-    void iniciarRonda();
+    void loadDock();
+    void win();
     ~game();
 public slots:
     void uiManager();
+    void roundManager();
+    void cargarEnemigos();
+    void remainingEnemies();
     void keyPressEvent(QKeyEvent *event);
+signals:
+    void fail();
 private:
     player *jerry;
     arma *arma1;
-    enemy *mantis;
+    enemy *newMantis;
     QGraphicsRectItem *limites[5];
     QGraphicsScene *scene;
     unsigned short mode;
     QGraphicsPixmapItem *healt[3];
-
-    short ronda;
-
+    QGraphicsTextItem *t_puntos, *n_puntos, *n_municion , *t_arma, *t_ronda, *n_ronda;
+    short round,amountOfEnemies, killEnemies, round_n;
+    QTimer *rondaTimer;
 };
 
 enum Mode{

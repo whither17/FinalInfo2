@@ -1,6 +1,6 @@
 #include "bala.h"
 
-bala::bala(float vy0_, float vx0_, int distancia) : vy0(vy0_), vx0(vx0_), dis(distancia)
+bala::bala(float vy0_, float vx0_, int distancia, int tipo) : vy0(vy0_), vx0(vx0_), dis(distancia), tipo_(tipo)
 {
     setPixmap(QPixmap(":/entidades/disparoLineal.png").scaledToHeight(5));
     cutSprites(":/entidades/explosion.png");
@@ -32,8 +32,12 @@ void bala::iniciar_tiro(int x0, int y0, QPoint dir)
 
 void bala::parar_tiro()
 {
+    if(tipo_ == 2)
+    {
     animacion->start();
     time->stop();
+    }
+    else delete this;
 }
 
 void bala::switchAnimate()
@@ -63,8 +67,20 @@ void bala::cutSprites(QString name)
     sprites.push_back(image.copy(333,0,80,97));
     sprites.push_back(image.copy(413,0,80,97));
     sprites.push_back(image.copy(493,0,80,97));
+}
 
-
+bool bala::checkCollitions()
+{
+    bool colision = false;
+    collitions = collidingItems();
+    for(int i = 0; i < collitions.length(); i++)
+    {
+        if((typeid(*(collitions[i])) == typeid(QGraphicsRectItem)))
+        {
+            colision = true;
+        }
+    }
+     return colision;
 }
 
 void bala::tiro()
@@ -83,25 +99,25 @@ void bala::tiro()
 
         setPos(posx,posy);
 
-        if(posy > y) parar_tiro();
+        if(posy > y || checkCollitions()) parar_tiro();
     }
     else if(tempDir == Down)
     {
         posx = x;
-        posy = y-vy0*k*n*T+0.5*ay*(k*n*T*k*n*T);
-        n++;
+        if(tipo_ == 1) posy = y+35*(k*n*T*k*n*T);     // fisica de la bala de pistola
+        else if(tipo_ == 2) posy = y-vy0*k*n*T+0.5*ay*(k*n*T*k*n*T); // fisica de la bala del lanzagranadas
         setRotation(90);
         setPos(posx,posy);
-        if(posy > y + dis) parar_tiro();
+        if(posy > y + dis || checkCollitions()) parar_tiro();
     }
     else if(tempDir == Up)
     {
         posx = x;
-        posy = y-vy0*k*n*T-0.5*ay*(k*n*T*k*n*T);
-        n++;
+        if(tipo_ == 1) posy = y-35*(k*n*T*k*n*T);
+        else if(tipo_ == 2) posy = y-vy0*k*n*T-0.5*ay*(k*n*T*k*n*T);
         setRotation(270);
         setPos(posx,posy);
-        if(posy < y - dis) parar_tiro();
+        if(posy < y - dis || checkCollitions()) parar_tiro();
     }
     n++;
 }

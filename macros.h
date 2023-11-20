@@ -22,7 +22,6 @@ const int gun_alto = 440;
 const int gun_largo = 583;
 
 const float ay = 9.8;  //ac g terrestre
-const short speed = 3;
 
 
 #endif // MACROS_H

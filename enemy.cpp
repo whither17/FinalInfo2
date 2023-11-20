@@ -1,6 +1,6 @@
 #include "enemy.h"
 
-enemy::enemy()
+enemy::enemy(player *jerr) : jerry(jerr)
 {
     cutSprites(":/entidades/Mantis.png");
     setPixmap(spritesRight[7].scaledToHeight(110));
@@ -13,10 +13,13 @@ enemy::enemy()
 
     connect(animateTimer, SIGNAL(timeout()), this, SLOT(switchAnimate()));
     connect(animateTimer, SIGNAL(timeout()), this, SLOT(move()));
+    connect(animateTimer, SIGNAL(timeout()), this, SLOT(checkCollitions()));
+
     setDirection(Left);
     index = 0;
     limit = 1;
-
+    healt = 100;
+    speed = rand() %3+2;
 }
 
 void enemy::cutSprites(QString name)
@@ -36,7 +39,6 @@ void enemy::cutSprites(QString name)
         spritesLeft.push_back(image.copy((j*ancho_Mantis)+(bordeMantis)*(j+1),
         (alto_Mantis)+(bordeMantis)*(2), ancho_Mantis, alto_Mantis));
     }
-
 }
 
 void enemy::setDirection(QPoint dir)
@@ -55,7 +57,6 @@ void enemy::distEnemy(int x_, int y_)
     int dy = y_ - y();
 
     if (abs(dx) > abs(dy)) {
-
         if (dx > 0) {
 
             setDirection(Right);
@@ -73,6 +74,32 @@ void enemy::distEnemy(int x_, int y_)
     }
 
     if(abs(dx) < 5 && abs(dy) < 5) attack();
+}
+
+void enemy::checkCollitions()
+{
+    collitions = collidingItems();
+    for(int i = 0; i < collitions.length(); i++)
+    {
+        if(typeid(*(collitions[i])) == typeid(bala))
+        {
+            if(jerry->getTipo_arma() == 1)
+            {
+                healt -=50;
+                b1 = jerry->getBala();
+                b1->parar_tiro();
+            }
+            else
+            {
+                healt = 0;
+                b1 = jerry->getBala();
+                b1->parar_tiro();
+            }
+
+
+        }
+        if(healt <= 0) die();
+    }
 }
 
 void enemy::switchAnimate()
@@ -108,6 +135,13 @@ void enemy::move()
 
     else setPos(x(), y() - speed);
 
+}
+
+void enemy::die()
+{
+    emit muerto();
+    animateTimer->stop();
+    hide();
 }
 
 

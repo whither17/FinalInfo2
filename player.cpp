@@ -16,8 +16,10 @@ player::player(QGraphicsScene *scene)
     salud = 3;
     index = 0;
     limit = 1;
-
-    cambiarArma(2);
+    score = 0;
+    tipo_arma = 2;
+    cambiarArma(tipo_arma);
+    municion = arma1->getMunicion();
 }
 
 void player::cutSprites(QString name)
@@ -99,6 +101,11 @@ void player::posicionActual()
     emit movement(x(), y());
 }
 
+void player::addScore()
+{
+    score += 100;
+}
+
 void player::damage()
 {
     salud = salud - 1;
@@ -114,9 +121,34 @@ void player::damage()
 
 }
 
+int player::getScore() const
+{
+    return score;
+}
+
+int player::getTipo_arma() const
+{
+    return tipo_arma;
+}
+
+void player::setTipo_arma(int newTipo_arma)
+{
+    tipo_arma = newTipo_arma;
+}
+
 QPoint player::getTempDir() const
 {
     return tempDir;
+}
+
+int player::getMunicion() const
+{
+    return arma1->getMunicion();
+}
+
+bala *player::getBala()
+{
+    return arma1->getBala();
 }
 
 short player::getLives() const
@@ -154,6 +186,12 @@ void player::usarArma()
 {
     qDebug() << "tiro";
     arma1->disparar();
+}
+
+void player::dead()
+{
+    emit fail();
+    animateDead();
 }
 
 player::~player()

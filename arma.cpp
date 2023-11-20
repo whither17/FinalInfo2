@@ -1,20 +1,21 @@
 #include "arma.h"
 
-arma::arma(int tipo, QGraphicsScene *scene)
+arma::arma(int tipo_, QGraphicsScene *scene)
 {
-    if(tipo == 1)
+    tipo = tipo_;
+    if(tipo_ == 1)
     {
-        cutSprites(":/entidades/gun.png", 1);
+        cutSprites(":/entidades/gun.png");
         municion = 30;
-        vx0 = 120;
-        vy0 = 2;
+        vx0 = 160;
+        vy0 = 8;
         distanciaTiro1 = 10000;
 
     }
 
-    else if(tipo == 2)
+    else if(tipo_ == 2)
     {
-        cutSprites(":/entidades/lanzagranadas.png", 2);
+        cutSprites(":/entidades/lanzagranadas.png");
         setPixmap(sprites[0].scaledToHeight(15));
         municion = 10;
         vx0 = 70;
@@ -24,7 +25,7 @@ arma::arma(int tipo, QGraphicsScene *scene)
     scena = scene;
 }
 
-void arma::cutSprites(QString name, int tipo)
+void arma::cutSprites(QString name)
 {
     if(tipo == 1)
     {
@@ -55,18 +56,57 @@ void arma::setDirection(QPoint dir_)
 
 void arma::mover(int x, int y)
 {
-    setPos(x, y+alto_Jerry/4);
+    if(tipo == 1)
+    {
+        if(dir == Left)
+        {
+            setPos(x-6, y+alto_Jerry/3);
+        }
+        else if(dir == Right)
+        {
+            setPos(x+28, y+alto_Jerry/3);
+        }
+        else setPos(x, y+alto_Jerry/3);
+    }
+    if(tipo == 2)
+    {
+        if(dir == Left)
+        {
+            setPos(x-6, y+alto_Jerry/3);
+        }
+        else if(dir == Right)
+        {
+            setPos(x+2, y+alto_Jerry/3);
+        }
+        else setPos(x, y+alto_Jerry/3);
+    }
 }
 
 void arma::disparar()
 {
     municion--;
-    if(municion >= 0)
+    if(municion > 0)
     {
-        b1 = new bala(vy0, vx0, distanciaTiro1);
+        b1 = new bala(vy0, vx0, distanciaTiro1, tipo);
         b1->setPos(x(), y());
         scena->addItem(b1);
         b1->iniciar_tiro(x(), y(), dir);
     }
+    else municion = 0;
+}
+
+int arma::getMunicion() const
+{
+    return municion;
+}
+
+bala *arma::getBala()
+{
+    return b1;
+}
+
+void arma::setMunicion(int newMunicion)
+{
+    municion = newMunicion;
 }
 

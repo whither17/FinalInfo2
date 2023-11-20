@@ -14,9 +14,13 @@
 class arma : public QObject, public QGraphicsPixmapItem
 {
 public:
-    arma(int tipo, QGraphicsScene *scene);
-    void cutSprites(QString name, int tipo);
+    arma(int tipo_, QGraphicsScene *scene);
+    void cutSprites(QString name);
     void setDirection(QPoint dir_);
+    int getMunicion() const;
+    bala *getBala();
+    void setMunicion(int newMunicion);
+
 public slots:
     void mover(int x, int y);
     void disparar();
@@ -24,6 +28,7 @@ public slots:
 private:
     std::vector<QPixmap> sprites;
     int municion;
+    short tipo;
     QGraphicsScene *scena;
     float vx0;
     float vy0;
