@@ -14,10 +14,14 @@ class enemy : public QObject, public QGraphicsPixmapItem
     Q_OBJECT
 public:
     QTimer *animateTimer;
-    enemy(player *jerr);
+    enemy();
     void cutSprites(QString name);
     void setDirection(QPoint dir);
     void attack();
+    void setJerry(player *newJerry);
+    void resume();
+    void pause();
+
 public slots:
     void distEnemy(int x_, int y_);
     void checkCollitions();
@@ -36,6 +40,7 @@ private:
     int speed;
     player *jerry;
     bala *b1;
+    bool isAlive;
 
 };
 

@@ -22,6 +22,8 @@ public:
     void cambiarArma(int tipo);
     void usarArma();
     void dead();
+    void play();
+    void pause();
     ~player();
     void setCanMove(bool newCanMove);
     short getLives() const;

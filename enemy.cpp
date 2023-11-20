@@ -1,6 +1,6 @@
 #include "enemy.h"
 
-enemy::enemy(player *jerr) : jerry(jerr)
+enemy::enemy()
 {
     cutSprites(":/entidades/Mantis.png");
     setPixmap(spritesRight[7].scaledToHeight(110));
@@ -20,6 +20,7 @@ enemy::enemy(player *jerr) : jerry(jerr)
     limit = 1;
     healt = 100;
     speed = rand() %3+2;
+    isAlive = true;
 }
 
 void enemy::cutSprites(QString name)
@@ -53,52 +54,58 @@ void enemy::attack()
 
 void enemy::distEnemy(int x_, int y_)
 {
-    int dx = x_ - x();
-    int dy = y_ - y();
+    if(isAlive)
+    {
+        int dx = x_ - x();
+        int dy = y_ - y();
 
-    if (abs(dx) > abs(dy)) {
-        if (dx > 0) {
+        if (abs(dx) > abs(dy)) {
+            if (dx > 0) {
 
-            setDirection(Right);
+                setDirection(Right);
+            } else {
+                setDirection(Left);
+            }
         } else {
-            setDirection(Left);
-        }
-    } else {
 
-        if (dy > 0) {
-            setDirection(Up);
+            if (dy > 0) {
+                setDirection(Up);
 
-        } else {
-            setDirection(Down);
+            } else {
+                setDirection(Down);
+            }
         }
+
+        if(abs(dx) < 5 && abs(dy) < 5) attack();
     }
-
-    if(abs(dx) < 5 && abs(dy) < 5) attack();
 }
 
 void enemy::checkCollitions()
 {
-    collitions = collidingItems();
-    for(int i = 0; i < collitions.length(); i++)
+    if(isAlive)
     {
-        if(typeid(*(collitions[i])) == typeid(bala))
+        collitions = collidingItems();
+        for(int i = 0; i < collitions.length(); i++)
         {
-            if(jerry->getTipo_arma() == 1)
+            if(typeid(*(collitions[i])) == typeid(bala))
             {
-                healt -=50;
-                b1 = jerry->getBala();
-                b1->parar_tiro();
-            }
-            else
-            {
-                healt = 0;
-                b1 = jerry->getBala();
-                b1->parar_tiro();
-            }
+                if(jerry->getTipo_arma() == 1)
+                {
+                    healt -=50;
+                    b1 = jerry->getBala();
+                    b1->parar_tiro();
+                }
+                else
+                {
+                    healt = 0;
+                    b1 = jerry->getBala();
+                    b1->parar_tiro();
+                }
 
 
+            }
+            if(healt <= 0) die();
         }
-        if(healt <= 0) die();
     }
 }
 
@@ -139,9 +146,28 @@ void enemy::move()
 
 void enemy::die()
 {
-    emit muerto();
+    if(isAlive) emit muerto();
+    isAlive = false;
     animateTimer->stop();
     hide();
+}
+
+void enemy::setJerry(player *newJerry)
+{
+    jerry = newJerry;
+}
+
+void enemy::resume()
+{
+    if(isAlive)
+    {
+        animateTimer->start();
+    }
+}
+
+void enemy::pause()
+{
+    animateTimer->stop();
 }
 
 

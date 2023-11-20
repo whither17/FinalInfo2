@@ -194,6 +194,16 @@ void player::dead()
     animateDead();
 }
 
+void player::play()
+{
+    JerryMove->start();
+}
+
+void player::pause()
+{
+    JerryMove->stop();
+}
+
 player::~player()
 {
 

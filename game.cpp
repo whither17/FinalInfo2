@@ -6,6 +6,8 @@ game::game()
     scene = new QGraphicsScene;
     jerry = new player(scene);
     rondaTimer = new QTimer;
+    lag = new QTimer;
+    round_n = 6;
 }
 
 void game::loadGame()
@@ -25,9 +27,9 @@ void game::loadGame()
     jerry->setPos(13*ancho, 13*largo);
 
     scene->addItem(jerry);
-    connect(rondaTimer, SIGNAL(timeout()), this,SLOT(cargarEnemigos()));
+    //connect(rondaTimer, SIGNAL(timeout()), this,SLOT(cargarEnemigos()));
     connect(rondaTimer, SIGNAL(timeout()), this, SLOT(uiManager()));
-    connect(rondaTimer, SIGNAL(timeout()), this, SLOT(roundManager()));
+    connect(lag, SIGNAL(timeout()), this, SLOT(countDown()));
 
     loadDock();
 
@@ -38,6 +40,7 @@ void game::loadGame()
     killEnemies = 0;
     round = 1;
     rondaTimer->start();
+    cargarEnemigos();
 }
 
 bool game::colliderLimits(player *pl)
@@ -116,26 +119,28 @@ void game::win()
 
 void game::cargarEnemigos()
 {
-    if (amountOfEnemies < round_n)
+    newMantis = new enemy[round_n];
+    for(short i = 0; i < round_n; i++)
     {
-        int distanceGeneration = 500;
-        int angleOfGeneration = rand() % 360;
+    newMantis[i].setJerry(jerry);
+    int distanceGeneration = 500;
+    int angleOfGeneration = rand() % 360;
 
-        int xPos = jerry->x() + distanceGeneration * std::cos(angleOfGeneration * M_PI / 180 +3);
-        int yPos = jerry->y() + distanceGeneration * std::sin(angleOfGeneration * M_PI / 180 -2);
+    int xPos = jerry->x() + distanceGeneration * std::cos(angleOfGeneration * M_PI / 180 +3);
+    int yPos = jerry->y() + distanceGeneration * std::sin(angleOfGeneration * M_PI / 180 -2);
 
-        xPos = qBound(0, xPos, static_cast<int>(scene->width()));
-        yPos = qBound(0, yPos, static_cast<int>(scene->height()));
+    xPos = qBound(0, xPos, static_cast<int>(scene->width()));
+    yPos = qBound(0, yPos, static_cast<int>(scene->height()));
 
-        enemy *newMantis = new enemy(jerry);
-        newMantis->setPos(xPos, yPos);
-        amountOfEnemies++;
 
-        connect(jerry, SIGNAL(movement(int,int)), newMantis, SLOT(distEnemy(int,int)));
-        connect(newMantis, SIGNAL(muerto()), jerry, SLOT(addScore()));
-        connect(newMantis, SIGNAL(muerto()), this, SLOT(remainingEnemies()));
+    newMantis[i].setPos(xPos, yPos);
+    amountOfEnemies++;
 
-        scene->addItem(newMantis);
+    connect(jerry, SIGNAL(movement(int,int)), &newMantis[i], SLOT(distEnemy(int,int)));
+    connect(&newMantis[i], SIGNAL(muerto()), jerry, SLOT(addScore()));
+    connect(&newMantis[i], SIGNAL(muerto()), this, SLOT(remainingEnemies()));
+
+    scene->addItem(&newMantis[i]);
     }
 }
 
@@ -145,6 +150,9 @@ void game::remainingEnemies()
     if(killEnemies >= round_n)
     {
         round++;
+        delete []newMantis;
+        wait(2.0);
+        if(round < 4) cargarEnemigos();
     }
 }
 
@@ -174,23 +182,20 @@ void game::keyPressEvent(QKeyEvent *event)
             }
 
         else if (event->key() == Qt::Key_Space)
-        {
-            jerry->usarArma();
+        {       
+            if(mode == Mode::Play) jerry->usarArma();
         }
+
         else if(event->key() == Qt::Key_P){
             mode = Mode::Pause;
-            //pause();
-            //background->fadeIn();
-            //get_ready->setPlainText("GAME PAUSE");
+            pause();
         }
     }
+
     else if(mode == Mode::Pause){
         if(event->key() == Qt::Key_P){
             mode = Mode::Play;
-            //resume();
-            //background->fadeOut();
-            //get_ready->setPlainText("");
-            //pause->play();
+            resume();
         }
     }
 }
@@ -234,7 +239,39 @@ void game::roundManager()
     if(round == 2) round_n = 7;
     if(round == 3) round_n = 9;
     if(round == 4) win();
+}
 
+void game::wait(qreal msec) {
+    if (mode != Mode::Play)
+        return;
+    mode = Mode::Pause;
+    lag->start(int(1000 * msec));
+}
+
+void game::resume()
+{
+    jerry->play();
+    for(short i = 0; i < round_n; i++)
+    {
+        newMantis[i].resume();
+    }
+}
+
+void game::pause()
+{
+
+    jerry->pause();
+    for(short i = 0; i < round_n; i++)
+    {
+        newMantis[i].pause();
+    }
+}
+
+void game::countDown() {
+    mode = Mode::Play;
+    jerry->show();
+    lag->stop();
+    resume();
 }
 
 game::~game()

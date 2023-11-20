@@ -24,12 +24,16 @@ public:
     bool colliderLimits(player *pl);
     void loadDock();
     void win();
+    void wait(qreal msec);
+    void resume();
+    void pause();
     ~game();
 public slots:
     void uiManager();
     void roundManager();
     void cargarEnemigos();
     void remainingEnemies();
+     void countDown();
     void keyPressEvent(QKeyEvent *event);
 signals:
     void fail();
@@ -43,7 +47,7 @@ private:
     QGraphicsPixmapItem *healt[3];
     QGraphicsTextItem *t_puntos, *n_puntos, *n_municion , *t_arma, *t_ronda, *n_ronda;
     short round,amountOfEnemies, killEnemies, round_n;
-    QTimer *rondaTimer;
+    QTimer *rondaTimer, *lag;
 };
 
 enum Mode{
