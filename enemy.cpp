@@ -3,9 +3,21 @@
 enemy::enemy()
 {
     cutSprites(":/entidades/Mantis.png");
-    setPixmap(spritesRight[7].scaledToHeight(110));
+    setPixmap(spritesRight[7].scaledToHeight(95));
 
     animateTimer = new QTimer;
+    timer = new QElapsedTimer;
+
+    soundDead = new QMediaPlayer;
+    soundDamage = new QMediaPlayer;
+    audioOutput1 = new QAudioOutput;
+    audioOutput2 = new QAudioOutput;
+    audioOutput1->setVolume(10);
+    audioOutput2->setVolume(10);
+    soundDead->setAudioOutput(audioOutput1);
+    soundDamage->setAudioOutput(audioOutput2);
+    soundDead->setSource(QUrl("qrc:/level2/mantisDead.mp3"));
+    soundDamage->setSource(QUrl("qrc:/level2/mantisDamage.mp3"));
 
     animateTimer->setInterval(70);
 
@@ -19,7 +31,11 @@ enemy::enemy()
     index = 0;
     limit = 1;
     healt = 100;
+    int drop = rand() %100;
+    if(drop > 70) isDrop = true;
+    else isDrop = false;
     speed = rand() %3+2;
+    qDebug() << "speed " << speed;
     isAlive = true;
 }
 
@@ -33,8 +49,6 @@ void enemy::cutSprites(QString name)
         spritesRight.push_back(image.copy((i*ancho_Mantis)+(bordeMantis)*(i+1),
         (bordeMantis), ancho_Mantis, alto_Mantis));
     }
-
-
     for(int j = 7; j >= 0; j--)
     {
         spritesLeft.push_back(image.copy((j*ancho_Mantis)+(bordeMantis)*(j+1),
@@ -45,11 +59,6 @@ void enemy::cutSprites(QString name)
 void enemy::setDirection(QPoint dir)
 {
     tempDir = dir;
-}
-
-void enemy::attack()
-{
-
 }
 
 void enemy::distEnemy(int x_, int y_)
@@ -75,8 +84,6 @@ void enemy::distEnemy(int x_, int y_)
                 setDirection(Down);
             }
         }
-
-        if(abs(dx) < 5 && abs(dy) < 5) attack();
     }
 }
 
@@ -86,12 +93,13 @@ void enemy::checkCollitions()
     {
         collitions = collidingItems();
         for(int i = 0; i < collitions.length(); i++)
-        {
+        {                
             if(typeid(*(collitions[i])) == typeid(bala))
             {
                 if(jerry->getTipo_arma() == 1)
                 {
                     healt -=50;
+                    if(healt >= 50) soundDamage->play();
                     b1 = jerry->getBala();
                     b1->parar_tiro();
                 }
@@ -101,8 +109,6 @@ void enemy::checkCollitions()
                     b1 = jerry->getBala();
                     b1->parar_tiro();
                 }
-
-
             }
             if(healt <= 0) die();
         }
@@ -121,15 +127,14 @@ void enemy::switchAnimate()
 
     if(tempDir == Right || tempDir == Up || tempDir == Down)
     {
-        setPixmap(spritesRight[index].scaledToHeight(110));
+        setPixmap(spritesRight[index].scaledToHeight(95));
 
     }
     else if (tempDir == Left)
     {
-        setPixmap(spritesLeft[index].scaledToHeight(110));
+        setPixmap(spritesLeft[index].scaledToHeight(95));
 
     }
-
 }
 
 void enemy::move()
@@ -142,12 +147,35 @@ void enemy::move()
 
     else setPos(x(), y() - speed);
 
+    if(collidesWithItem(jerry))
+    {   
+        emit atac();
+        wait(1);
+    }
+}
+
+void enemy::wait(qreal msec)
+{
+    timer->start();
+    qint64 duration = msec*1000;
+
+    while (timer->elapsed() < duration)
+    {
+        animateTimer->stop();
+        QCoreApplication::processEvents();
+    }
+    animateTimer->start();
 }
 
 void enemy::die()
 {
-    if(isAlive) emit muerto();
-    isAlive = false;
+    if(isAlive)
+    {
+        emit muerto();
+        soundDead->play();
+        if(isDrop) emit Drop(x(), y());
+        isAlive = false;
+    }
     animateTimer->stop();
     hide();
 }

@@ -5,21 +5,38 @@ player::player(QGraphicsScene *scene)
     cutSprites(":/entidades/Jerry.png");
     cutSpritesDead(":/entidades/jerryDead.png");
     setPixmap(sprites[8].scaledToHeight(70));
+
     JerryMove = new QTimer;
+    sound = new QMediaPlayer;
+    audioOutput = new QAudioOutput;
+
     JerryMove->start();
 
     connect(JerryMove, SIGNAL(timeout()), this, SLOT(posicionActual()));
+
     scena = scene;
+
     isAlive = true;
     canMove = true;
+
     lives = 3;
-    salud = 3;
     index = 0;
     limit = 1;
     score = 0;
-    tipo_arma = 2;
+    tipo_arma = 1;
+
+    arma1 = new arma(1, scena);
+    arma2 = new arma(2, scena);
+
     cambiarArma(tipo_arma);
-    municion = arma1->getMunicion();
+
+    municion1 = arma1->getMunicion();
+    municion2 = arma2->getMunicion();
+
+    sound->setAudioOutput(audioOutput);
+    sound->setSource(QUrl("qrc:/level2/damage.mp3"));
+    qDebug() << sound->hasAudio();
+    audioOutput->setVolume(60);
 }
 
 void player::cutSprites(QString name)
@@ -50,29 +67,33 @@ void player::cutSpritesDead(QString name)
 
 void player::setDirection(QPoint dir)
 {
-    tempDir = dir;
-    if(dir == Right)
+    if(isAlive)
     {
-        setPixmap(sprites[9].scaledToHeight(70));
-        cursor = 9;
-    }
-    if(dir == Left)
-    {
-        setPixmap(sprites[3].scaledToHeight(70));
-        cursor = 3;
-    }
-    if(dir == Up)
-    {
-        setPixmap(sprites[6].scaledToHeight(70));
-        cursor = 6;
-    }
-    if(dir == Down)
-    {
-        setPixmap(sprites[0].scaledToHeight(70));
-        cursor = 0;
-    }
+        tempDir = dir;
+        if(dir == Right)
+        {
+            setPixmap(sprites[9].scaledToHeight(70));
+            cursor = 9;
+        }
+        if(dir == Left)
+        {
+            setPixmap(sprites[3].scaledToHeight(70));
+            cursor = 3;
+        }
+        if(dir == Up)
+        {
+            setPixmap(sprites[6].scaledToHeight(70));
+            cursor = 6;
+        }
+        if(dir == Down)
+        {
+            setPixmap(sprites[0].scaledToHeight(70));
+            cursor = 0;
+        }
 
-    arma1->setDirection(dir);
+        arma1->setDirection(dir);
+        arma2->setDirection(dir);
+    }
 }
 
 void player::switchAnimate()
@@ -98,6 +119,7 @@ void player::isAnimate()
 
 void player::posicionActual()
 {
+    if(isAlive)
     emit movement(x(), y());
 }
 
@@ -108,17 +130,50 @@ void player::addScore()
 
 void player::damage()
 {
-    salud = salud - 1;
+    lives = lives - 1;
+    audioOutput->setVolume(50);
+    sound->play();
 
-    qDebug() << salud;
-
-    if(salud <= 0)
+    if(lives <= 0)
     {
-        salud = 3;
-        lives = lives - 1;
+        lives = 0;
+        emit fail();
     }
-    if(lives <= 0) emit fail();
+}
 
+void player::powerUp(int a)
+{
+    if(a == 1)
+    {
+        if(lives == 3) score += 50;
+        else lives = lives + 1;
+    }
+    else
+    {
+        if(tipo_arma == 1) arma1->setMunicion(arma1->getMunicion() + 15);
+
+        if(tipo_arma == 2) arma2->setMunicion(arma2->getMunicion() + 10);
+    }
+}
+
+void player::setIsAlive(bool newIsAlive)
+{
+    isAlive = newIsAlive;
+}
+
+void player::restartArma()
+{
+
+}
+
+void player::setLives(short newLives)
+{
+    lives = newLives;
+}
+
+void player::setScore(int newScore)
+{
+    score = newScore;
 }
 
 int player::getScore() const
@@ -134,6 +189,7 @@ int player::getTipo_arma() const
 void player::setTipo_arma(int newTipo_arma)
 {
     tipo_arma = newTipo_arma;
+    cambiarArma(tipo_arma);
 }
 
 QPoint player::getTempDir() const
@@ -143,12 +199,14 @@ QPoint player::getTempDir() const
 
 int player::getMunicion() const
 {
-    return arma1->getMunicion();
+    if(tipo_arma == 1) return arma1->getMunicion();
+    if(tipo_arma == 2) return arma2->getMunicion();
 }
 
 bala *player::getBala()
 {
-    return arma1->getBala();
+    if(tipo_arma == 1) return arma1->getBala();
+    if(tipo_arma == 2) return arma2->getBala();
 }
 
 short player::getLives() const
@@ -158,40 +216,59 @@ short player::getLives() const
 
 void player::move(bool mover)
 {
-    if(mover == false) {
-        direccion = tempDir;
-        setPos(pos() + direccion * 4);
-        switchAnimate();
-    }
-
-    else
+    if(isAlive)
     {
-        if(direccion == Up) setPos(x(), y() + 2);
-        if(direccion == Down) setPos(x(), y() - 2);
-        if(direccion == Left) setPos(x() + 2, y());
-        if(direccion == Right) setPos(x() - 2, y());
-    }
+        if(mover == false) {
+            direccion = tempDir;
+            setPos(pos() + direccion * 4);
+            switchAnimate();
+        }
 
-    arma1->mover(x(), y());
+        else
+        {
+            if(direccion == Up) setPos(x(), y() + 2);
+            if(direccion == Down) setPos(x(), y() - 2);
+            if(direccion == Left) setPos(x() + 2, y());
+            if(direccion == Right) setPos(x() - 2, y());
+        }
+
+        if(tipo_arma == 1) arma1->mover(x(), y());
+        if(tipo_arma == 2) arma2->mover(x(), y());
+    }
 }
 
 void player::cambiarArma(int tipo)
 {
-    arma1 = new arma(tipo, scena);
-    arma1->mover(-50, -50);
-    scena->addItem(arma1);
+    tipo_arma = tipo;
+    if(tipo_arma == 1)
+    {
+        arma1->mover(-50, -50);
+        scena->addItem(arma1);
+        arma1->show();
+        arma2->hide();
+    }
+    else
+    {
+        arma2->mover(-50, -50);
+        scena->addItem(arma2);
+        arma2->show();
+        arma1->hide();
+    }
 }
 
 void player::usarArma()
 {
-    qDebug() << "tiro";
-    arma1->disparar();
+    if(isAlive)
+    {
+        if(tipo_arma == 1) arma1->disparar();
+        else arma2->disparar();
+    }
 }
 
 void player::dead()
 {
-    emit fail();
     animateDead();
+    isAlive = false;
 }
 
 void player::play()
@@ -206,7 +283,9 @@ void player::pause()
 
 player::~player()
 {
-
+    delete arma1;
+    delete arma2;
+    delete JerryMove;
 }
 
 

@@ -4,13 +4,19 @@ bala::bala(float vy0_, float vx0_, int distancia, int tipo) : vy0(vy0_), vx0(vx0
 {
     setPixmap(QPixmap(":/entidades/disparoLineal.png").scaledToHeight(5));
     cutSprites(":/entidades/explosion.png");
+
     time = new QTimer;
     animacion = new QTimer;
+
     animacion->setInterval(65);
+
     connect(time,SIGNAL(timeout()),this,SLOT(tiro()));
     connect(animacion, SIGNAL(timeout()), this, SLOT(switchAnimate()));
+
     index = 0;
     add = 1;
+    used = false;
+
 }
 
 void bala::iniciar_tiro(int x0, int y0, QPoint dir)
@@ -32,12 +38,23 @@ void bala::iniciar_tiro(int x0, int y0, QPoint dir)
 
 void bala::parar_tiro()
 {
-    if(tipo_ == 2)
+    if(!used)
     {
-    animacion->start();
-    time->stop();
+        if(tipo_ == 2)
+        {
+            used = true;
+            animacion->start();
+            time->stop();
+        }
+
+        else
+        {
+            used = true;
+            time->stop();
+            hide();
+            delete this;
+        }
     }
-    else delete this;
 }
 
 void bala::switchAnimate()
@@ -80,7 +97,13 @@ bool bala::checkCollitions()
             colision = true;
         }
     }
-     return colision;
+    return colision;
+}
+
+bala::~bala()
+{
+    delete time;
+    delete animacion;
 }
 
 void bala::tiro()
@@ -101,6 +124,7 @@ void bala::tiro()
 
         if(posy > y || checkCollitions()) parar_tiro();
     }
+
     else if(tempDir == Down)
     {
         posx = x;

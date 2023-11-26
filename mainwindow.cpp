@@ -39,8 +39,8 @@ void MainWindow::cambiarWidget()
     case 2:
 
         this->setVisible(false);
-        nivel2 = new game;
-        nivel2->loadGame();
+        nivel2 = new level2;
+        nivel2->loadlevel2();
         nivel2->show();
         break;
     default:

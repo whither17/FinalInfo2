@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QGraphicsItem>
 #include <QPixmap>
-#include "game.h"
+#include "level2.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -26,6 +26,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
     unsigned short ventana;
-    game *nivel2;
+    level2 *nivel2;
 };
 #endif // MAINWINDOW_H

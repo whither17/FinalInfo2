@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -12,7 +12,8 @@ SOURCES += \
     arma.cpp \
     bala.cpp \
     enemy.cpp \
-    game.cpp \
+    item.cpp \
+    level2.cpp \
     main.cpp \
     mainwindow.cpp \
     player.cpp
@@ -21,7 +22,8 @@ HEADERS += \
     arma.h \
     bala.h \
     enemy.h \
-    game.h \
+    item.h \
+    level2.h \
     macros.h \
     mainwindow.h \
     player.h
@@ -35,4 +37,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    recursos.qrc
+    recursos.qrc \
+    sound.qrc

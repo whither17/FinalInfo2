@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/level2">
+        <file>damage.mp3</file>
+        <file>levelUP.mp3</file>
+        <file>disparo.mp3</file>
+        <file>mantisDead.mp3</file>
+        <file>mantisDamage.mp3</file>
+        <file>drop.mp3</file>
+    </qresource>
+</RCC>

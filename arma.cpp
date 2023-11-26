@@ -7,7 +7,7 @@ arma::arma(int tipo_, QGraphicsScene *scene)
     {
         cutSprites(":/entidades/gun.png");
         municion = 30;
-        vx0 = 160;
+        vx0 = 180;
         vy0 = 8;
         distanciaTiro1 = 10000;
 
@@ -84,15 +84,17 @@ void arma::mover(int x, int y)
 
 void arma::disparar()
 {
-    municion--;
+
     if(municion > 0)
     {
         b1 = new bala(vy0, vx0, distanciaTiro1, tipo);
         b1->setPos(x(), y());
         scena->addItem(b1);
         b1->iniciar_tiro(x(), y(), dir);
+        municion--;
+
     }
-    else municion = 0;
+    else municion = 0;   
 }
 
 int arma::getMunicion() const

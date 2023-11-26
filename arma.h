@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
+#include <QMediaPlayer>
+#include <QAudioOutput>
 #include <vector>
 #include <QTimer>
 #include "bala.h"
@@ -27,14 +29,15 @@ public slots:
 
 private:
     std::vector<QPixmap> sprites;
+    QGraphicsScene *scena;
+    QPoint dir;
     int municion;
     short tipo;
-    QGraphicsScene *scena;
     float vx0;
     float vy0;
     int distanciaTiro1;
     bala *b1;
-    QPoint dir;
+
 };
 
 #endif // ARMA_H

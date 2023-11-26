@@ -1,11 +1,14 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <QObject>
+
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
-#include <vector>
+#include <QMediaPlayer>
+#include <QAudioOutput>
+#include <QObject>
 #include <QTimer>
+#include <vector>
 #include "macros.h"
 #include "arma.h"
 
@@ -15,25 +18,28 @@ class player : public QObject, public QGraphicsPixmapItem
 public:
 
     player(QGraphicsScene *scene);
-    void cutSprites(QString name);
+    void setTipo_arma(int newTipo_arma);
     void cutSpritesDead(QString name);
+    void setCanMove(bool newCanMove);
+    void setIsAlive(bool newIsAlive);
+    void cutSprites(QString name);
     void setDirection(QPoint dir);
-    void move(bool mover);
     void cambiarArma(int tipo);
+    void move(bool mover);
     void usarArma();
+    void pause();
     void dead();
     void play();
-    void pause();
-    ~player();
-    void setCanMove(bool newCanMove);
     short getLives() const;
     QPoint getTempDir() const;
     int getMunicion() const;
     bala *getBala();
     int getTipo_arma() const;
-    void setTipo_arma(int newTipo_arma);
-
     int getScore() const;
+    void setScore(int newScore);
+    void setLives(short newLives);
+    void restartArma();
+    ~player();
 
 public slots:
     void switchAnimate();
@@ -42,18 +48,23 @@ public slots:
     void posicionActual();
     void addScore();
     void damage();
+    void powerUp(int a);
+
 signals:
     void movement(int x, int y);
     void fail();
+
 private:
     QGraphicsScene *scena;
     QTimer *jerryDead, *JerryMove;
+    QPoint tempDir, direccion;
+    QMediaPlayer *sound;
+    QAudioOutput *audioOutput;
     std::vector<QPixmap> sprites;
     std::vector<QPixmap> spritesDead;
-    short limit, index, cursor, lives, salud;
-    int municion, tipo_arma, score;
-    arma *arma1;
-    QPoint tempDir, direccion;
+    arma *arma1, *arma2;
+    short limit, index, cursor, lives;
+    int municion1, municion2, tipo_arma, score;
     bool isAlive, canMove;
 
 };

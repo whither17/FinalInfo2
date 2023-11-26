@@ -13,6 +13,8 @@
         <file>Mantis.png</file>
         <file>lanzagranadas.png</file>
         <file>gun.png</file>
+        <file>pocion.png</file>
+        <file>municion.png</file>
     </qresource>
     <qresource prefix="/Ui_level2">
         <file>corazon.png</file>

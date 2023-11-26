@@ -1,8 +1,9 @@
 #ifndef BALA_H
 #define BALA_H
+
+#include <QGraphicsPixmapItem>
 #include <QObject>
 #include <QDebug>
-#include <QGraphicsPixmapItem>
 #include <vector>
 #include <QTimer>
 #include "macros.h"
@@ -12,10 +13,12 @@ class bala : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
+
     bala(float vy0_, float vx0_, int distancia, int tipo);
     QTimer *time;
     void iniciar_tiro(int x0, int y0, QPoint dir);
     bool checkCollitions();
+    ~bala();
 public slots:
     void tiro();
     void parar_tiro();
@@ -31,6 +34,7 @@ private:
     int dis, tipo_;
     short index, add;
     QTimer *animacion;
+    bool used;
 
 };
 
