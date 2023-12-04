@@ -1,22 +1,37 @@
 <RCC>
     <qresource prefix="/logo">
-        <file>logo.png</file>
+        <file>textures/logo.png</file>
+        <file>textures/instrucciones.png</file>
+        <file>textures/win.jpeg</file>
     </qresource>
     <qresource prefix="/fondos">
-        <file>calle.jpeg</file>
+        <file>textures/level2/calle.jpeg</file>
+        <file>textures/level0/parque.jpg</file>
+        <file>textures/level0/garaje.jpg</file>
     </qresource>
     <qresource prefix="/entidades">
-        <file>Jerry.png</file>
-        <file>disparoLineal.png</file>
-        <file>explosion.png</file>
-        <file>jerryDead.png</file>
-        <file>Mantis.png</file>
-        <file>lanzagranadas.png</file>
-        <file>gun.png</file>
-        <file>pocion.png</file>
-        <file>municion.png</file>
+        <file>textures/level2/Jerry.png</file>
+        <file>textures/level2/disparoLineal.png</file>
+        <file>textures/level2/explosion.png</file>
+        <file>textures/level2/jerryDead.png</file>
+        <file>textures/level2/Mantis.png</file>
+        <file>textures/level2/lanzagranadas.png</file>
+        <file>textures/level2/gun.png</file>
+        <file>textures/level2/pocion.png</file>
+        <file>textures/level2/municion.png</file>
+        <file>textures/level0/morty.png</file>
+        <file>textures/level0/chica.png</file>
+        <file>textures/level0/Mantis_Traitor.png</file>
+        <file>textures/level0/Rick.png</file>
+    </qresource>
+    <qresource prefix="/level1">
+        <file>textures/level1/botellarellena1.png</file>
+        <file>textures/level1/botellarellena2o3.png</file>
+        <file>textures/level1/Font.png</file>
+        <file>textures/level1/vacio.png</file>
+        <file>textures/level1/botella.png</file>
     </qresource>
     <qresource prefix="/Ui_level2">
-        <file>corazon.png</file>
+        <file>textures/level2/corazon.png</file>
     </qresource>
 </RCC>
