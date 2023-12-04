@@ -12,6 +12,7 @@ public:
     item(int tipo_);
     void cutSprites(QString name);
     int getTipo() const;
+    ~item();
 
 public slots:
     void checkCollitions();

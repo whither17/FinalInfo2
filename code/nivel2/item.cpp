@@ -37,6 +37,13 @@ int item::getTipo() const
     return tipo;
 }
 
+item::~item()
+{
+    delete live;
+    delete sound;
+    delete audioOutput;
+}
+
 void item::checkCollitions()
 {
     if(uso)
@@ -49,11 +56,6 @@ void item::checkCollitions()
                 uso = false;
                 emit power(tipo);
                 sound->play();
-                if(sound->isPlaying() == false)
-                {
-                    delete sound;
-                    delete audioOutput;
-                }
             }
         }
     }

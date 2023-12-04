@@ -6,6 +6,7 @@ level0::level0(short level_) : level(level_)
     text = new QGraphicsTextItem;
     this->setFrameStyle(0);
     this->setFixedSize(820, 600);
+    this->setWindowTitle("Rick and Morty Love potion");
     this->setWindowIcon(QIcon(":/logo/textures/win.jpeg"));
     scene->setSceneRect(0,0,820,600);
     scene->addRect(largo, largo, 14*largo, 4*largo, QPen(Qt::gray, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin), QBrush(Qt::white));

@@ -3,7 +3,7 @@
 
 level1::level1()
 {
-    this->setWindowTitle("Nivel 2");
+    this->setWindowTitle("Nivel 1");
     this->setWindowIcon(QIcon(":/logo/textures/win.jpeg"));
     this->setFrameStyle(0);
     this->setFixedSize(820, 600);
