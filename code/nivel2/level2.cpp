@@ -49,6 +49,8 @@ void level2::loadlevel2()
     killEnemies = 0;
     round = 0;
     round_n = 0;
+    jerry->setDirection(Left);
+    jerry->setTipo_arma(1);
     remainingEnemies();
 }
 

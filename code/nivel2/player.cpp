@@ -35,7 +35,7 @@ player::player(QGraphicsScene *scene, QString sprite, short borde, short d_anch,
     audioOutput->setVolume(60);
     setPixmap(sprites[8].scaledToHeight(scale));
 
-    cambiarArma(tipo_arma);
+    setTipo_arma(1);
 }
 
 void player::cutSprites(QString name, short borde, short ancho_transparente, short alto_transparente)
