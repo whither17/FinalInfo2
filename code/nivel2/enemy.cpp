@@ -181,7 +181,7 @@ void enemy::die()
     }
 
     animateTimer->stop();
-    //hide();
+    hide();
 
 }
 
