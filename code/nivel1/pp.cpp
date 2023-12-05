@@ -347,3 +347,17 @@ void pp::rotatePixmap(int control)
     }
 }
 
+bool pp::isResolved()
+{
+    QColor color=posiciones[0]->getReplacement_color();
+    bool control=true;
+    for(int i=1;i<posiciones.size();i++){
+        if(posiciones[i]->getReplacement_color()==color){
+
+        }else{
+    control=false;
+        }
+    }
+    return control;
+}
+

@@ -31,12 +31,16 @@ public:
 public slots:
     void channgeLiquid();
 
+signals:
+    void Endgame();
+
 private:
     pp *emisore;
     void secondanimation(int emisor,pp *receptor);
     QGraphicsScene *scene;
     void mousePressEvent(QMouseEvent *event);
     QRectF colisiorect(pp* base);
+    void checkendgame();
     std::vector<pp*> pocimas;
     pp *pp2,*pp1,*pp3,*pp4;
     int movement_status=0,pocionarriba=-1,pocionreceptor=-1;

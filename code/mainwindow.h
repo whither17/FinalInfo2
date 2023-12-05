@@ -28,6 +28,7 @@ private slots:
     void irAnivel2();
     void tutorial();
     void restart();
+    void restartLevel0();
     void cambiarNivel(int n_);
     void endGame();
 

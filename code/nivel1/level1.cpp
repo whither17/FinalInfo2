@@ -38,8 +38,7 @@ level1::~level1()
     delete pp1;
     delete pp3;
     delete pp4;
-    delete pp4;
-    delete scene;
+    //delete scene;
 }
 
 pp* level1::searchpp(int id)
@@ -85,8 +84,7 @@ void level1::channgeLiquid()
     movement_status=0;
     pocionarriba=-1;
     pocionreceptor=-1;
-
-
+    checkendgame();
 }
 
 void level1::mousePressEvent(QMouseEvent *event)
@@ -160,7 +158,23 @@ void level1::mousePressEvent(QMouseEvent *event)
 
 QRectF level1::colisiorect(pp* base)
 {
-    QRectF colision(base->getX()-((base->getPicturefinal().width())*0.4)/2,base->getY()-((base->getPicturefinal().height())*0.4)/2,(base->getPicturefinal().width())*0.4,(base->getPicturefinal().height())*0.4);
+    QRectF colision(base->getX()+((base->getPicturefinal().width())*0.4)/3,base->getY()+((base->getPicturefinal().height())*0.4)/3,(base->getPicturefinal().width())*0.4,(base->getPicturefinal().height())*0.4);
     return colision;
 }
 
+void level1::checkendgame()
+{
+    bool control=true;
+    for(int i=0;i<pocimas.size();i++){
+        if(pocimas[i]->isResolved()){
+
+        }else{
+            control=false;
+        }
+    }
+    if(control){
+        qDebug()<<"El juego ha terminado";
+        emit Endgame();
+        delete this;
+    }
+}

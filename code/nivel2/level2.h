@@ -43,12 +43,14 @@ public slots:
 
 signals:
     void winer();
+    void kill();
+    void pausar();
+    void reanudar();
 
 private:
     item *it;
     player *jerry;
     enemy *newMantis;
-    std::vector<enemy*> enemies;
     QGraphicsRectItem *limites[5];
     QGraphicsScene *scene;
     unsigned short mode;

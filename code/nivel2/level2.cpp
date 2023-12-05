@@ -37,9 +37,8 @@ void level2::loadlevel2()
 
     jerry->setPos(13*ancho, 13*largo);
     scene->addItem(jerry);
-
+    rondaTimer->start();
     connect(rondaTimer, SIGNAL(timeout()), this, SLOT(uiManager()));
-    connect(rondaTimer, SIGNAL(timeout()), this, SLOT(roundManager()));
     connect(jerry, SIGNAL(fail()), this, SLOT(gameFail()));
 
     loadDock();
@@ -48,10 +47,9 @@ void level2::loadlevel2()
 
     mode = Play;
     killEnemies = 0;
-    round = 1;
-    round_n = 5;
-    rondaTimer->start();
-    cargarEnemigos();
+    round = 0;
+    round_n = 0;
+    remainingEnemies();
 }
 
 bool level2::colliderLimits(player *pl)
@@ -133,36 +131,32 @@ void level2::cargarEnemigos()
     int yPos = 0;
     int distanceGeneration = 0;
     int angleOfGeneration = 0;
-    short i = 0;
 
-    while(i < round_n)
+    for(short i = 0; i <= round_n; i++)
     {
-        qDebug() << "a crear " << i;
         newMantis = new enemy;
-        qDebug() << "creado " << i;
-        enemies.push_back(newMantis);
-        newMantis = nullptr;
-        enemies[i]->setJerry(jerry);
+        newMantis->setJerry(jerry);
         distanceGeneration = 480;
         angleOfGeneration = rand() % 360;
 
         xPos = jerry->x() + distanceGeneration * std::cos(angleOfGeneration * M_PI / 180 +3);
         yPos = jerry->y() + distanceGeneration * std::sin(angleOfGeneration * M_PI / 180 -2);
-        if(i % 2 == 0) enemies[i]->setPos(xPos, -1*yPos);
-        else if(i % 3 == 0 && i != 6) enemies[i]->setPos(xPos + 2, yPos);
+        if(i % 2 == 0) newMantis->setPos(xPos, -1*yPos);
+        else if(i % 3 == 0 && i != 6) newMantis->setPos(xPos + 2, yPos);
 
-        else enemies[i]->setPos(xPos, yPos+10);
+        else newMantis->setPos(xPos, yPos+10);
 
-        connect(jerry, SIGNAL(movement(int,int)), enemies[i], SLOT(distEnemy(int,int)));
-        connect(enemies[i], SIGNAL(atac()), jerry, SLOT(damage()));
-        connect(enemies[i], SIGNAL(Drop(int,int)), this, SLOT(generateDrop(int,int)));
-        connect(enemies[i], SIGNAL(muerto()), jerry, SLOT(addScore()));
-        connect(enemies[i], SIGNAL(muerto()), this, SLOT(remainingEnemies()));
+        connect(jerry, SIGNAL(movement(int,int)), newMantis, SLOT(distEnemy(int,int)));
+        connect(newMantis, SIGNAL(atac()), jerry, SLOT(damage()));
+        connect(newMantis, SIGNAL(Drop(int,int)), this, SLOT(generateDrop(int,int)));
+        connect(newMantis, SIGNAL(muerto()), jerry, SLOT(addScore()));
+        connect(newMantis, SIGNAL(muerto()), this, SLOT(remainingEnemies()));
+        connect(this, SIGNAL(kill()), newMantis, SLOT(eliminar()));
+        connect(this, SIGNAL(pausar()), newMantis, SLOT(pause()));
+        connect(this, SIGNAL(reanudar()), newMantis, SLOT(resume()));
 
-        scene->addItem(enemies[i]);
-        i++;
+        scene->addItem(newMantis);
     }
-    qDebug() << "fin " << i;
 }
 
 void level2::remainingEnemies()
@@ -171,16 +165,15 @@ void level2::remainingEnemies()
 
     if(killEnemies >= round_n)
     {
-        for(short i = 0; i < enemies.size(); i++)
-        {
-            delete enemies[i];
-            qDebug() << "delete " << i;
-        }
-        enemies.clear();
         round++;
         sound->play();
+
         roundManager();
-        if(round < 4) cargarEnemigos();
+        if(round < 4)
+        {
+            emit kill();
+            cargarEnemigos();
+        }
         killEnemies = 0;
     }
 }
@@ -308,20 +301,13 @@ void level2::wait(qreal msec)
 void level2::resume()
 {
     jerry->play();
-
-    for(short i = 0; i < enemies.size(); i++)
-    {
-        enemies[i]->resume();
-    }
+    emit reanudar();
 }
 
 void level2::pause()
 {
     jerry->pause();
-    for(short i = 0; i < enemies.size(); i++)
-    {
-        enemies[i]->pause();
-    }
+    emit pausar();
 }
 
 void level2::generateDrop(int x, int y)
@@ -341,23 +327,16 @@ void level2::generateDrop(int x, int y)
 void level2::gameFail()
 {
     pause();
-
     jerry->setScore(0);
     jerry->restartArma();
-
-    for(short i = 0; i < enemies.size(); i++)
-    {
-        delete enemies[i];
-    }
-    enemies.clear();
     round = 1;
     killEnemies = 0;
     waitDead(5);
     jerry->setPos(13*ancho, 13*largo);
     jerry->setIsAlive(true);
     jerry->setLives(3);
-
-    //wait(3);
+    emit kill();
+    wait(3);
     cargarEnemigos();
     jerry->play();
 }

@@ -135,6 +135,11 @@ void enemy::switchAnimate()
     }
 }
 
+void enemy::eliminar()
+{
+    delete this;
+}
+
 void enemy::move()
 {
     if(tempDir == Left) setPos(x() - speed, y());
@@ -174,9 +179,10 @@ void enemy::die()
         if(isDrop) emit Drop(x(), y());
         isAlive = false;
     }
+
     animateTimer->stop();
     //hide();
-    //delete this;
+
 }
 
 void enemy::setJerry(player *newJerry)
@@ -195,6 +201,11 @@ void enemy::resume()
 void enemy::pause()
 {
     animateTimer->stop();
+}
+
+void enemy::setIsAlive(bool newIsAlive)
+{
+    isAlive = newIsAlive;
 }
 
 /*

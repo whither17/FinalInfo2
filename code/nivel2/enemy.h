@@ -18,18 +18,22 @@ public:
     enemy();
     void cutSprites(QString name);
     void setDirection(QPoint dir);
-    void setJerry(player *newJerry);
-    void resume();
-    void wait(qreal msec);
-    void pause();
+    void setJerry(player *newJerry);  
+    void wait(qreal msec);  
     //~enemy();
+
+    void setIsAlive(bool newIsAlive);
 
 public slots:
     void distEnemy(int x_, int y_);
     void checkCollitions();
     void switchAnimate();
+    void eliminar();
     void move();
     void die();
+    void resume();
+    void pause();
+
 signals:
     void muerto();
     void atac();

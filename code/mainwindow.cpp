@@ -55,41 +55,47 @@ void MainWindow::restart()
     ventana = 0;
 }
 
+void MainWindow::restartLevel0()
+{
+    nivel1->hide();
+    nivel0 = new level0(2);
+    connect(nivel0, SIGNAL(irNivel(int)), this, SLOT(cambiarNivel(int)));
+    nivel0->show();
+}
+
 void MainWindow::cambiarNivel(int n_)
 {
     if(n_ == 1) nivel1Open();
     if(n_ == 2)
     {
-        delete nivel0;
-        irAnivel2();
+        nivel2 = new level2;
+        nivel2->loadlevel2();
+        connect(nivel2, SIGNAL(winer()), this, SLOT(endGame()));
+        nivel2->show();
     }
 }
 
 void MainWindow::nivel1Open()
 {
     nivel0->hide();
-    delete nivel0;
     nivel1 = new level1;
+    connect(nivel1, SIGNAL(Endgame()), this, SLOT(restartLevel0()));
     nivel1->show();
 }
 
 void MainWindow::endGame()
 {
     this->show();
-    ui->im_instrucciones->setGeometry(0,0, 1050, 550);
+    ui->im_instrucciones->setGeometry(0,0, 600, 340);
     ui->im_instrucciones->setPixmap(QPixmap(":/logo/textures/win.jpeg").scaledToHeight(600));
+
+    this->setFixedSize(600, 400);
+    this->setWindowTitle("Win!");
+    ui->boton_atras->setGeometry(this->width() - ui->boton_atras->width() - 10, this->height() - ui->boton_atras->height() - 23, ui->boton_atras->width(), ui->boton_atras->height());
+    ui->groupBox->hide();
     ui->im_instrucciones->show();
+    ui->boton_atras->show();
     delete nivel2;
-    QElapsedTimer time;
-
-    time.start();
-    qint64 duration = 5000;
-
-    while (time.elapsed() < duration)
-    {
-        QCoreApplication::processEvents();
-    }
-    restart();
 }
 
 

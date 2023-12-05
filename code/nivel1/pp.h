@@ -35,6 +35,7 @@ public:
     void setObjective(int newObjective);
     void updatepixmap();
     void returnToposition();
+    bool isResolved();
 
 private:
     void rotatePixmap(int control);
